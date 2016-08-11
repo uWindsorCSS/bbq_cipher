@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     }
   } else {
     cipher = generateCipher();
-    /* We could have just printed out the cipher in getCipher()
+    /* We could have just printed out the cipher in generateCipher()
      * but that would be a naughty side effect */
     for (unsigned i = 0; i < cipher.size(); ++i) {
       cout << "\r\n" << char('a' + i) << "  ->  " << cipher[i] << endl;
