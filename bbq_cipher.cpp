@@ -10,21 +10,21 @@
 
 using namespace std;
 
-vector<char> getCipher();
-vector<char> getCipher(ifstream& cipher_file);
+vector<char> generateCipher();
+vector<char> loadCipherFromFile(ifstream& cipher_file);
 
 int main(int argc, char* argv[]) {
   vector<char> cipher;
   if(argc == 2) {
     ifstream cipher_file(argv[1]);
     if(cipher_file) {
-      cipher = getCipher(cipher_file);
+      cipher = loadCipherFromFile(cipher_file);
     } else {
       cout << "Failed to open cipher file." << endl;
       return -1;
     }
   } else {
-    cipher = getCipher();
+    cipher = generateCipher();
     /* We could have just printed out the cipher in getCipher()
      * but that would be a naughty side effect */
     for (unsigned i = 0; i < cipher.size(); ++i) {
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-vector<char> getCipher() {
+vector<char> generateCipher() {
   vector<char> cipher('z' - 'a' + 1);
   iota(cipher.begin(), cipher.end(), 'a');
 
@@ -54,7 +54,7 @@ vector<char> getCipher() {
   return cipher;
 }
 
-vector<char> getCipher(ifstream& cipher_file) {
+vector<char> loadCipherFromFile(ifstream& cipher_file) {
   vector<char> cipher('z' - 'a' + 1);
   for(string pair; getline(cipher_file, pair); /* empty */) {
     cipher[pair.front() - 'a'] = pair.back();
