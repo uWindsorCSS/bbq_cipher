@@ -1,46 +1,32 @@
-#include <chrono>
-#include <random>
-#include <vector>
-#include <iostream>
-#include <string>
-#include <map>
+#include <algorithm>
 #include <cctype>
+#include <chrono>
+#include <iostream>
+#include <map>
+#include <random>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-int main(int argc, char * argv[]) {
-        vector<string> messages;
-        string m;
-        while(getline(cin, m)) {
-                messages.push_back(m);
-        }
-        string letters;
-        for(char l = 'a'; l <= 'z'; ++l) {
-                letters.push_back(l);
-        }
+int main(int argc, char* argv[]) {
+  vector<char> cipher('z' - 'a' + 1);
+  iota(cipher.begin(), cipher.end(), 'a');
 
-        map<char, char> cipher;
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        mt19937_64 rand_engine(seed);
-        for(char l = 'a';  l <= 'z' && letters.size(); ++l) {
-                uniform_int_distribution<int> dist(0, letters.size() - 1);
-                int i = dist(rand_engine);
-                cipher[l] = letters[i];
-                letters.erase(i, 1);
-        }
-        for(const auto& c : cipher) {
-                cout << '\n' << c.first << "  ->  " << c.second << endl;
-        }
-        cout << "\n\n\n";
-        for(const auto& m : messages) {
-                for(const auto& c : m) {
-                        if(cipher.count(tolower(c))) {
-                                cout << cipher[tolower(c)];
-                        } else {
-                                cout << c;
-                        }
-                }
-                cout << "\n\n\n\n\n";
-        }
-        return 0;
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  mt19937_64 rand_engine(seed);
+  shuffle(cipher.begin(), cipher.end(), rand_engine);
+
+  for (unsigned i = 0; i < cipher.size(); ++i) {
+    cout << '\n' << char('a' + i) << "  ->  " << cipher[i] << endl;
+  }
+
+  for (string message; getline(cin, message); /* empty */) {
+    for (const auto& c : message) {
+      cout << (isalpha(c) ? cipher[tolower(c) - 'a'] : c);
+    }
+    cout << "\n\n\n\n\n";
+  }
+
+  return 0;
 }
